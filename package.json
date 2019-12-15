@@ -1,0 +1,38 @@
+{
+  "name": "flow-engine",
+  "version": "0.0.1",
+  "description": "A configurable process engine written by Typescript",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec",
+    "ts": "ts-node ./lib/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YJChan/flow-engine.git"
+  },
+  "keywords": [
+    "process",
+    "workflow",
+    "flow",
+    "chart",
+    "strategy"
+  ],
+  "author": "YJ Chan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/YJChan/flow-engine/issues"
+  },
+  "homepage": "https://github.com/YJChan/flow-engine#readme",
+  "devDependencies": {
+    "@types/chai": "^4.2.7",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.12.17",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.2",
+    "ts-node": "^8.5.4",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.3"
+  },
+  "dependencies": {}
+}

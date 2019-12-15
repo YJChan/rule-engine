@@ -1,0 +1,1 @@
+export const MAX_LOOP_ITERATION = 10;
