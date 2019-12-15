@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --reporter spec",
-    "ts": "ts-node ./lib/index.ts"
+    "ts": "ts-node ./index.ts"
   },
   "repository": {
     "type": "git",

@@ -1,6 +1,6 @@
-import { Rule } from './model/rule.model';
-import { Condition } from './model/condition.model';
-import { Outcome } from './model/outcome.model';
+import { Rule } from './lib/model/rule.model';
+import { Condition } from './lib/model/condition.model';
+import { Outcome } from './lib/model/outcome.model';
 
 const rule = new Rule()
   .id('test1')
