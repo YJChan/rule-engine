@@ -1,5 +1,5 @@
 export class ConditionOperator {
-  public static eq: string = '=';
+  public static eq: string = '==';
   public static gt: string = '>';
   public static gte: string = '>=';
   public static lt: string = '<';

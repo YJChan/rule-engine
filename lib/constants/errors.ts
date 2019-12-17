@@ -9,7 +9,7 @@ export class ERRORS {
   };
   public static NO_OPERATOR_FOUND = {
     code: 'O01',
-    message: 'Cannot find match operator when evaluate condition'
+    message: 'Cannot find operator when evaluate condition, valid operators are ==, !=, >, >=, <, <='
   };
   public static NO_CONDITION_TAG_FOUND = {
     code: 'O02',

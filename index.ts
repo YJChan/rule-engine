@@ -2,14 +2,16 @@ import { Rule } from './lib/model/rule.model';
 import { Condition } from './lib/model/condition.model';
 import { Outcome } from './lib/model/outcome.model';
 
-const rule = new Rule()
+const param1 = 'A';
+const param2 = 'B';
+
+const ruleOutcome = new Rule()
   .id('test1')
-  .describe('testing rulle')
-  .when(new Condition('#tag', '1 = 1'))
-  .when(new Condition('#tag2', '2 = 2'))
-  .expected(new Outcome('#out1', {pageId: 'A1', user: 'system'}))
+  .describe('testing rule')
+  .when(new Condition('#tag', '1 == 1'))
+  .andWhen(new Condition('#tag2', `${param1} != ${param2}`))
+  .orWhen(new Condition('#tag3', `${param1} > ${param2}`))
+  .thenReturn(new Outcome('#out1', {url: 'https://xyz.com/process-after-rule?x=a&y=12', user: 'system'}))
   .verify();
 
-// const cond = new Condition('#tag', '=', 1, 1);
-
-console.log(rule);
+console.log(ruleOutcome);

@@ -46,11 +46,13 @@ export class Outcome implements IOutcome {
     this._outcome = o;
   }
 
+  /* experimental parsing */
   public setSuccessCondition() {
-    this.parseOutcome();
+
   }
 
   // (#tag and tag2) or tag3
+  /* experimental parsing */
   parseOutcome() {
     if (! this._conditionTag) {
       throw new Err(ERRORS.NO_CONDITION_TAG_FOUND);
@@ -59,6 +61,7 @@ export class Outcome implements IOutcome {
     const tagArr = this.extractFromBrackets2(this._conditionTag);
   }
 
+  /* experimental parsing */
   extractFromBrackets(str: string) {
     try {
       let tagArr: any[] = [];
@@ -138,6 +141,7 @@ export class Outcome implements IOutcome {
     }
   }
 
+  /* experimental parsing */
   extractFromBrackets2(str: string) {
     try {
       let tagArr: any[] = [];

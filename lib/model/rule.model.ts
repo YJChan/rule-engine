@@ -10,15 +10,20 @@ export class Rule {
   public _priority: number = 99;
   public _conditions: Condition[] = [];
   public _outcome: Outcome | undefined;
+  public _name: string = '';
 
   constructor(
   ) { }
-
-  id(n: string) {
-    this._id = n;
+  
+  id(i: string) {
+    this._id = i;
     return this;
   }
 
+  name(n: string) {
+    this._name = n;
+    return this;
+  }
   describe(d: string) {
     this._description = d;
     return this;
@@ -32,8 +37,11 @@ export class Rule {
       if (this.findDuplicate(condition)) {
         throw new Err(ERRORS.DUPLICATE_FOUND);
       }
+      if (Utility.isEmpty(condition._mandatory)) {
+        condition._mandatory = true;
+      }
       this._conditions.push(condition);
-      // Logger.debug(condition);
+
       return this;
     } catch (err) {
       Logger.debug(err);
@@ -41,27 +49,65 @@ export class Rule {
     }
   }
 
-  expected(outcome: Outcome) {
+  andWhen(condiiton: Condition) {
+    condiiton._mandatory = true;
+    return this.when(condiiton);
+  }
+
+  orWhen(condiition: Condition) {
+    condiition._mandatory = false;
+    return this.when(condiition);
+  }
+
+  thenReturn(outcome: Outcome) {
     this._outcome = outcome; 
     return this;
   }
 
   verify() {
-    const conditionMetTag = this._conditions.map(condition => { condition.evaluate(); return condition; })
-      .filter(condition => condition._conditionMeet)
-      .map(condiition => condiition._tag);
-    
-    if (conditionMetTag.length === this._conditions.length) {
-      if (this._outcome) {
-        return {outcome: this._outcome.outcome, completed: true};
+    try {   
+      const andConditionMetTag = this._conditions
+        .filter(condition => {
+          return condition._mandatory;
+        })  
+        .map(condition => { 
+          condition.evaluate();
+          return condition; 
+        })
+        .every((condition) => {
+          return condition._conditionMeet;
+        });    
+
+      const orConditionMetCount = this._conditions
+      .filter(condition => {
+        condition._mandatory === false;
+      }).length;
+
+      if (orConditionMetCount > 0){
+        if (! andConditionMetTag) {
+          const orConditionMet = this._conditions
+            .filter(condition => {
+              condition._mandatory === false;
+            }).map(condition =>  {
+              condition.evaluate();
+              return condition._conditionMeet;
+            }).length;
+        
+          if (orConditionMet > 0) {
+            return {outcome: this._outcome?.outcome, completed: true};
+          }
+        }
+      } else {
+        if (! andConditionMetTag) {
+          return { outcome: {}, completed: false };
+        } else {
+          return {outcome: this._outcome?.outcome, completed: true};
+        }
       }
-      return {outcome: {}, completed: true};
+    } catch (err) {
+      Logger.debug(err);
+      return {outcome: {}, completed: false};
     }
-    return {outcome: {}, completed: false};
-    // return ;
-    // this._outcome?.successCondition.and.forEach((s) => {
-    //   if ()
-    // });
   }
 
   findDuplicate(condition: Condition) {
