@@ -7,6 +7,14 @@ export class ERRORS {
     code: 'C02',
     message: 'Program seems run into infinite loop'
   };
+  public static EMPTY_TRIGGER = {
+    code: 'C03',
+    message: 'There is no trigger setup'
+  };
+  public static ERROR_EXEC_TRIGGER = {
+    code: 'C04',
+    message: 'There is a problem with the trigger function'
+  };
   public static NO_OPERATOR_FOUND = {
     code: 'O01',
     message: 'Cannot find operator when evaluate condition, valid operators are ==, !=, >, >=, <, <='

@@ -10,6 +10,7 @@ export interface ICondition {
   comparer?: any;
   conditionMeet?: boolean;
   mandatory?: boolean;
+
   evaluate(): void;
 }
 
