@@ -61,6 +61,7 @@ ruleEngine.context.onEvaluate(async () => {
 });
 
 const outcome =ruleEngine.process();
+```
 
 ### output
 {outcome: 'delivery witht POS Laju in Malaysia', completed: true}
