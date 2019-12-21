@@ -1,24 +1,23 @@
 import { IEngineContextTrigger, EngineContextTrigger } from './trigger.context';
 import { Err, ERRORS } from '../constants/errors';
 import { Logger } from '../common/log';
+import { Utility } from '../common/utils';
 
 /**
  * TODO:
  * Context should define the scenario you are trying to apply rule
  */
 export interface IEngineContext {
-  data: any[];
-  identifier?: any;
+  data: any;
   steps?: any;
   trigger?: IEngineContextTrigger[];
 
-  onContextEvaluate(...params: any): any;
+  onEvaluate(...params: any): any;
 }
 
 export class EngineContext implements IEngineContext {
-  data: any[] = [];
+  data: any;
   currentContext: any;
-  identifier?: any;
 
   steps?: any;
   
@@ -28,29 +27,44 @@ export class EngineContext implements IEngineContext {
 
   }
 
+  setData(d: any): void {
+    this.data = d;
+  }
+
+  getData(identifier: string) {
+    if (identifier.includes('.')) {
+      const identifierArr = identifier.split('.');
+      if (identifierArr.length === 2) {
+        return this.data[identifierArr[0]][identifierArr[1]];
+      }
+    } else {
+      return this.data[identifier];
+    }
+  }
+
   setTrigger(engineContextTrigger: EngineContextTrigger) {
     this.trigger?.push(engineContextTrigger);
   }
 
-
-  onContextEvaluate(fn: Function) {
+  onTrigger() {
+    if (this.trigger.length === 0) {
+      Logger.debug(ERRORS.EMPTY_TRIGGER);
+    }
     try {
       for (const trig of this.trigger) {
-        if (this.currentContext === trig.triggerWhen) {
-          // do something;
-            throw new Err(ERRORS.ERROR_EXEC_TRIGGER);
-            trig.fn();
-          }
+        trig.fn();
       }
     } catch (err) {
       Logger.debug(err);
+      throw new Err(ERRORS.ERROR_EXEC_TRIGGER);
     }
-      
+  }
+
+  onEvaluate(fn: Function) {
     try {
-      fn();
+        fn();
     } catch (err) {
       Logger.debug(err);
     }
   }
-  
 }

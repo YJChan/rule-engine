@@ -34,5 +34,7 @@
     "tslint": "^5.20.1",
     "typescript": "^3.7.3"
   },
-  "dependencies": {}
+  "dependencies": {
+    "util": "^0.12.1"
+  }
 }

@@ -21,10 +21,13 @@ export class Condition implements ICondition {
   public _conditionMeet?: boolean;
 
   constructor(
-    public _tag: string | number,
     public _condition: string,
+    public _tag?: string | number,
     public _mandatory?: boolean  
   ) {
+    if (Utility.isEmpty(this._tag)) {
+      this._tag = Utility.id();
+    }
   }
 
   parseCondition(): boolean{
@@ -40,25 +43,25 @@ export class Condition implements ICondition {
       } else if (this._condition.includes(ConditionOperator.neq)) {
         condArr = this._condition.split(ConditionOperator.neq);
         this._operator = ConditionOperator.neq;
-      } else if (this._condition.includes(ConditionOperator.gt)) {
-        condArr = this._condition.split(ConditionOperator.gt);
-        this._operator = ConditionOperator.gt;
       } else if (this._condition.includes(ConditionOperator.gte)) {
         condArr = this._condition.split(ConditionOperator.gte);
         this._operator = ConditionOperator.gte;
-      } else if (this._condition.includes(ConditionOperator.lt)) {
-        condArr = this._condition.split(ConditionOperator.lt);
-        this._operator = ConditionOperator.lt;
+      } else if (this._condition.includes(ConditionOperator.gt)) {
+        condArr = this._condition.split(ConditionOperator.gt);
+        this._operator = ConditionOperator.gt;
       } else if (this._condition.includes(ConditionOperator.lte)) {
         condArr = this._condition.split(ConditionOperator.lte);
         this._operator = ConditionOperator.lte;
+      } else if (this._condition.includes(ConditionOperator.lt)) {
+        condArr = this._condition.split(ConditionOperator.lt);
+        this._operator = ConditionOperator.lt;
       } else {
         throw new Err(ERRORS.NO_OPERATOR_FOUND);
       }
-      
+
       this._comparer = condArr[0].toString().trim();
-      this._comparerValue = condArr[1].toString().trim(); 
-      return true;  
+      this._comparerValue = condArr[1].toString().trim();
+      return true;
     } catch (err) {
       Logger.info(err.message);
       return false;

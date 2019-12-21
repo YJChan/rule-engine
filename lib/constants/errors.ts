@@ -15,6 +15,10 @@ export class ERRORS {
     code: 'C04',
     message: 'There is a problem with the trigger function'
   };
+  public static NOT_FOUND_IN_ARRAY = {
+    code: 'C05',
+    message: 'The object is not found in an array'
+  };
   public static NO_OPERATOR_FOUND = {
     code: 'O01',
     message: 'Cannot find operator when evaluate condition, valid operators are ==, !=, >, >=, <, <='
@@ -30,6 +34,14 @@ export class ERRORS {
   public static DUPLICATE_FOUND = {
     code: 'R01',
     message: 'Duplicate condition found!'
+  };
+  public static EMPTY_RULES = {
+    code: 'E01',
+    message: 'Rules is not found'
+  };
+  public static EMPTY_CONTEXT = {
+    code: 'E02',
+    message: 'Context is not found'
   };
 }
 

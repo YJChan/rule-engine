@@ -11,19 +11,27 @@ export class Rule {
   public _conditions: Condition[] = [];
   public _outcome: Outcome | undefined;
   public _name: string = '';
+  public _contextIdentifier: string = '';
 
   constructor(
   ) { }
+  
   
   id(i: string) {
     this._id = i;
     return this;
   }
-
+  
   name(n: string) {
     this._name = n;
     return this;
   }
+
+  contextIdentifier(ci: string) {
+    this._contextIdentifier = ci;
+    return this;
+  }
+
   describe(d: string) {
     this._description = d;
     return this;
@@ -113,4 +121,9 @@ export class Rule {
   findDuplicate(condition: Condition) {
     return this._conditions.filter(_c =>  _c.equal(condition)).length > 0 ? true : false;
   }
+
+  setComparer() {
+    
+  }
+
 }

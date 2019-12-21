@@ -1,10 +1,11 @@
 import { Err, ERRORS } from "../constants/errors";
 import { Logger } from "../common/log";
 import { MAX_LOOP_ITERATION } from "../constants/operation";
+import { Utility } from "../common/utils";
 
 export interface IOutcome {
-  tag: string | number;
-  conditionTag: string | number;
+  tag?: string | number;
+  conditionTag?: string | number;
   outcome: any;
 }
 
@@ -12,18 +13,21 @@ export class Outcome implements IOutcome {
   successCondition: any;
 
   constructor(
-    public _tag: string | number,
     public _outcome: any,
+    public _tag?: string | number,
     public _conditionTag?: string,
   ) {
+    if (Utility.isEmpty(this._tag)) {
+      this._tag = Utility.id();
+    }
     this.successCondition = {
       and: [],
       or: []
     };
   }
 
-  public get tag(){
-    return this._tag;
+  public get tag(): string | number{
+    return this._tag? this._tag : '';
   }
 
   public set tag(t: string | number) {
@@ -46,6 +50,9 @@ export class Outcome implements IOutcome {
     this._outcome = o;
   }
 
+  public static EMPTY_OUTCOME() {
+    return {outcome: {}, completed: false};
+  }
   /* experimental parsing */
   public setSuccessCondition() {
 
