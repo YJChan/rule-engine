@@ -1,15 +1,15 @@
 {
-  "name": "flow-engine",
+  "name": "rule-engine",
   "version": "0.0.1",
   "description": "A configurable process engine written by Typescript",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --reporter spec",
+    "test": "mocha -r ts-node/register ./test/*.test.ts",
     "ts": "ts-node ./index.ts"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/YJChan/flow-engine.git"
+    "url": "git+https://github.com/YJChan/rule-engine.git"
   },
   "keywords": [
     "process",
@@ -21,9 +21,9 @@
   "author": "YJ Chan",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/YJChan/flow-engine/issues"
+    "url": "https://github.com/YJChan/rule-engine/issues"
   },
-  "homepage": "https://github.com/YJChan/flow-engine#readme",
+  "homepage": "https://github.com/YJChan/rule-engine#readme",
   "devDependencies": {
     "@types/chai": "^4.2.7",
     "@types/mocha": "^5.2.7",

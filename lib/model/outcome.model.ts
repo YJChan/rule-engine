@@ -51,7 +51,7 @@ export class Outcome implements IOutcome {
   }
 
   public static EMPTY_OUTCOME() {
-    return {outcome: {}, completed: false};
+    return {outcome: {}, passed: false};
   }
   /* experimental parsing */
   public setSuccessCondition() {

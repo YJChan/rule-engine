@@ -64,7 +64,7 @@ const outcome =ruleEngine.process();
 ```
 
 ### output
-{outcome: 'delivery witht POS Laju in Malaysia', completed: true}  
+{outcome: 'delivery witht POS Laju in Malaysia', passed: true}  
 similate async function  
 evaluate rule of dellivery Malaysia  
 

@@ -139,7 +139,7 @@ export class RuleEngine implements IEngine {
             // Logger.debug(rule._conditions);
             this.context.onTrigger();
             outcome = rule.verify();
-            if (outcome?.completed) {
+            if (outcome?.passed) {
               break;
             }
           }

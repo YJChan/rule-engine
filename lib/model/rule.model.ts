@@ -102,19 +102,19 @@ export class Rule {
             }).length;
         
           if (orConditionMet > 0) {
-            return {outcome: this._outcome?.outcome, completed: true};
+            return {outcome: this._outcome?.outcome, passed: true};
           }
         }
       } else {
         if (! andConditionMetTag) {
-          return { outcome: {}, completed: false };
+          return { outcome: {}, passed: false };
         } else {
-          return {outcome: this._outcome?.outcome, completed: true};
+          return {outcome: this._outcome?.outcome, passed: true};
         }
       }
     } catch (err) {
       Logger.debug(err);
-      return {outcome: {}, completed: false};
+      return {outcome: {}, passed: false};
     }
   }
 
