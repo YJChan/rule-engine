@@ -1,4 +1,4 @@
-import { IEngineContextTrigger, EngineContextTrigger } from './trigger.context';
+import { IEngineContextTrigger, EngineContextTrigger, PrePost } from './trigger.context';
 import { Err, ERRORS } from '../constants/errors';
 import { Logger } from '../common/log';
 import { Utility } from '../common/utils';
@@ -8,31 +8,34 @@ import { Utility } from '../common/utils';
  * Context should define the scenario you are trying to apply rule
  */
 export interface IEngineContext {
+  id: string | number;
   data: any;
   steps?: any;
   trigger?: IEngineContextTrigger[];
+  onEvalFn?: Function;
 
-  onEvaluate(...params: any): any;
+  setOnEvalFn(fn: Function): void;
 }
 
 export class EngineContext implements IEngineContext {
   data: any;
-  currentContext: any;
 
   steps?: any;
   
   trigger: IEngineContextTrigger[] = [];
-  
-  constructor() {
+  onEvalFn: Function = Function();
 
+  constructor(
+    public id: string | number,
+  ) {
   }
 
-  setData(d: any): void {
+  public setData(d: any): void {
     this.data = d;
   }
 
-  getData(identifier: string) {
-    if (identifier.includes('.')) {
+  public getData(identifier: string) {
+    if (identifier.indexOf('.') > -1) {
       const identifierArr = identifier.split('.');
       if (identifierArr.length === 2) {
         return this.data[identifierArr[0]][identifierArr[1]];
@@ -42,17 +45,46 @@ export class EngineContext implements IEngineContext {
     }
   }
 
-  setTrigger(engineContextTrigger: EngineContextTrigger) {
+  public setTrigger(engineContextTrigger: EngineContextTrigger) {
     this.trigger?.push(engineContextTrigger);
   }
 
-  onTrigger() {
+  public setOnEvalFn(fn: Function) {
+    this.onEvalFn = fn;
+  }
+
+  onPreTrigger() {
     if (this.trigger.length === 0) {
-      Logger.debug(ERRORS.EMPTY_TRIGGER);
+      //Logger.debug(ERRORS.EMPTY_TRIGGER);
+      return;
     }
     try {
       for (const trig of this.trigger) {
-        trig.fn();
+        if (trig.prePost === PrePost.PRE) {
+          trig.contextData = this.data;
+          trig.fn();
+          // break;
+        }
+      }
+
+    } catch (err) {
+      Logger.debug(err);
+      throw new Err(ERRORS.ERROR_EXEC_TRIGGER);
+    }
+  }
+
+  onPostTrigger() {
+    if (this.trigger.length === 0) {
+      // Logger.debug(ERRORS.EMPTY_TRIGGER);
+      return;
+    }
+    try {
+      for (const trig of this.trigger) {
+        if (trig.prePost === PrePost.POST) {
+          trig.contextData = this.data;
+          trig.fn(trig);
+          // break;
+        }
       }
     } catch (err) {
       Logger.debug(err);
@@ -60,9 +92,9 @@ export class EngineContext implements IEngineContext {
     }
   }
 
-  onEvaluate(fn: Function) {
+  public onEvaluate() {
     try {
-        fn();
+      this.onEvalFn(this.data);
     } catch (err) {
       Logger.debug(err);
     }

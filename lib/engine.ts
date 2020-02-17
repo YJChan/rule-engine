@@ -6,19 +6,23 @@ import { Logger } from "./common/log";
 import { IRuleEvalParam } from "./model/parameter.model";
 import { Outcome } from "./model/outcome.model";
 
+interface IContextMap {
+  [key: string]: EngineContext;
+}
+
 export interface IEngine {
   rules: Rule[];
-  context: EngineContext;
+  context: IContextMap;
   useContext: boolean;
 
   onStart(...params: any): any;
-  onEvaluate(): void;
+  onEvaluate(fn: Function): any;
   onEnd(...params: any): any;
   process(params: IRuleEvalParam): any;
   setRules(rules: Rule[]): void;
   getRules(): Rule[];
   setContext(context: IEngineContext): void;
-  getContext(): IEngineContext | undefined;
+  getContext(id: string | number): IEngineContext | undefined;
   addRule(rule: Rule): void;
   removeRule(ruleId: string | number): boolean;
   getRule(ruleId: string | number): Rule | undefined;
@@ -27,33 +31,40 @@ export interface IEngine {
 
 export class RuleEngine implements IEngine {
   rules: Rule[];
-  context: EngineContext;
+  context: IContextMap;
   public useContext: boolean;
+  currentContext: any;
 
   constructor(useContext: boolean = true) {
     this.rules = [];
-    this.context = new EngineContext();
+    this.context = {};
     this.useContext = useContext;
   }
 
   public setRules(rules: Rule[]): void {
     this.rules = rules;
   }
+
   public getRules(): Rule[] {
     return this.rules;
   }
+
   public setContext(context: EngineContext): void {
-    this.context = context;
+    this.context[context.id] = context;
   }
-  public getContext(): IEngineContext {
-    return this.context;
+
+  public getContext(id: string | number): IEngineContext {
+    const engineContext: IEngineContext = this.context[id];
+    return engineContext;
   }
+
   public addRule(rule: Rule): void {
     if (Utility.isEmpty(this.rules)) {
       throw new Err(ERRORS.EMPTY_RULES);
     }
     this.rules.push(rule);
   }
+
   public removeRule(ruleId: string | number): boolean {
     try {
       if (Utility.isEmpty(this.rules)) {
@@ -70,8 +81,8 @@ export class RuleEngine implements IEngine {
       Logger.debug(err);
       return false;
     }
-
   }
+
   public getRule(ruleId: string | number): Rule | undefined {
     try {
       const index = this.rules?.findIndex(rule => {
@@ -83,6 +94,7 @@ export class RuleEngine implements IEngine {
       return undefined;
     }
   }
+
   public editRule(r: Rule): Rule | undefined{
     try {
       const index = this.rules?.findIndex(rule => {
@@ -109,8 +121,12 @@ export class RuleEngine implements IEngine {
     
   }
   
-  public onEvaluate(): void {
-    
+  public onEvaluate(fn: Function) {
+    try {
+      fn();
+    } catch (err) {
+      Logger.debug(err);
+    }
   }
   
   public onEnd(...params: any) {
@@ -127,23 +143,25 @@ export class RuleEngine implements IEngine {
       }
 
       if (this.useContext) {
-        if (Utility.isEmpty(this.context)) {
+        if (Utility.isEmpty(this.currentContext)) {
           throw new Err(ERRORS.EMPTY_CONTEXT);
         }
+        this.context[this.currentContext].onPreTrigger();
+        
+        const ruleAppliedOnCurrContext = this.rules.filter(r => r._contextIdentifier === this.currentContext);
+        for (const rule of ruleAppliedOnCurrContext) {
+          rule._conditions.forEach(condition => {
+            condition._comparer = this.context[this.currentContext].getData(condition._comparer);
+          });
 
-        for (const rule of this.rules) {
-          if (rule._contextIdentifier === this.context.currentContext) {
-            rule._conditions.forEach(condition => {
-              condition._comparer = this.context.getData(condition._comparer);
-            });
-            // Logger.debug(rule._conditions);
-            this.context.onTrigger();
-            outcome = rule.verify();
-            if (outcome?.passed) {
-              break;
-            }
+          this.context[this.currentContext].onEvaluate();
+          outcome = rule.verify();
+          if (outcome?.passed) {
+            break;
           }
         }
+
+        this.context[this.currentContext].onPostTrigger();
 
         return outcome; 
       } else {
@@ -157,7 +175,13 @@ export class RuleEngine implements IEngine {
     }
   }
 
+  
+
   public test() {
 
+  }
+
+  public setJsonRules(jsonStr: JSON | string) {
+    
   }
 }

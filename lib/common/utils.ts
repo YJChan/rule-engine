@@ -25,8 +25,8 @@ export class Utility {
     return v < 0;
   }
 
-  public static id() {
-    return Math.random().toString(36).substr(2, 9);
+  public static id(num = 36) {
+    return Math.random().toString(num).substr(2, 9);
   }
 
   public static isAsyncFn(fn: any) {
