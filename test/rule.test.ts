@@ -90,5 +90,15 @@ describe('Multiple AND, OR condition in one rule', () => {
     const outcome = result?.outcome;
     expect(outcome).true;
   });
-  
 });
+
+describe('Engine processing rule', () => {
+  before(() => {
+
+  });
+
+
+  after(() => {
+
+  });
+})
